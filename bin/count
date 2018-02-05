@@ -1,0 +1,42 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+
+use File::Spec::Functions qw(catdir catfile);
+use Cwd qw(abs_path);
+use Data::Dumper;
+
+BEGIN {
+    use FindBin '$Bin';
+    use constant BASE_DIR => abs_path(catdir($Bin, '..'));
+    use lib catdir(BASE_DIR, 'lib');
+}
+
+use Time::HiRes qw(gettimeofday tv_interval);
+
+use constant DICT_FILE      => '2of12inf.txt';
+use constant DICT_FULL_FILE => catfile(BASE_DIR, 'lib', 'dicts', DICT_FILE);
+use constant WORD_LENGTH    => 8;
+use constant MODULES        => [qw(EightHash)];
+
+use ReadDict qw(dict_read);
+
+my $words = dict_read(DICT_FULL_FILE);
+
+foreach my $module (@{MODULES()}) {
+    eval "require $module; 1;" or die "Cannot proceed without $module: $@\n";
+    $module->import;
+
+ 	my $t0 = [gettimeofday];
+#      $elapsed = tv_interval ( $t0, [gettimeofday]);
+
+
+    my $resp = find_best_letters($words, WORD_LENGTH);
+
+    my $elapsed = tv_interval ( $t0 );
+    print "$resp->{'letters'} spells $resp->{'max'} words.\n";
+print "Elapsed: $elapsed\n";
+
+
+}
