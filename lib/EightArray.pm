@@ -1,4 +1,4 @@
-package EightHash;
+package EightArray;
 
 use strict;
 use warnings;
@@ -6,6 +6,8 @@ use File::Slurp;
 use parent 'Exporter';
 our @EXPORT = qw(find_best_letters);
 use Data::Dumper;
+
+use constant COUNT => 26;
 
 sub find_best_letters {
     my ($words, $length) = @_;
@@ -20,6 +22,7 @@ sub find_best_letters {
 
     return $result;
 }
+
 
 sub max_bucket {
     my $buckets = shift;
